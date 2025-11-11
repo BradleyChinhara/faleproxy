@@ -16,6 +16,12 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+const replaceYaleWithFale = (value = '') =>
+  value
+    .replace(/YALE/g, 'FALE')
+    .replace(/Yale/g, 'Fale')
+    .replace(/yale/g, 'fale');
+
 // API endpoint to fetch and modify content
 app.post('/fetch', async (req, res) => {
   try {
@@ -31,42 +37,21 @@ app.post('/fetch', async (req, res) => {
 
     // Use cheerio to parse HTML and selectively replace text content, not URLs
     const $ = cheerio.load(html);
-    
-    // Function to replace text but skip URLs and attributes
-    function replaceYaleWithFale(i, el) {
-      if ($(el).children().length === 0 || $(el).text().trim() !== '') {
-        // Get the HTML content of the element
-        let content = $(el).html();
-        
-        // Only process if it's a text node
-        if (content && $(el).children().length === 0) {
-          // Replace Yale with Fale in text content only
-          content = content.replace(/Yale/g, 'Fale').replace(/yale/g, 'fale').replace(/YALE/g, 'FALE');
-          $(el).html(content);
-        }
-      }
-    }
-    
+
     // Process text nodes in the body
     $('body *').contents().filter(function() {
       return this.nodeType === 3; // Text nodes only
     }).each(function() {
       // Replace text content but not in URLs or attributes
       const text = $(this).text();
-      const newText = text
-        .replace(/YALE/g, 'FALE')
-        .replace(/Yale/g, 'Fale')
-        .replace(/yale/g, 'fale');
+      const newText = replaceYaleWithFale(text);
       if (text !== newText) {
         $(this).replaceWith(newText);
       }
     });
     
     // Process title separately
-    const title = $('title').text()
-      .replace(/YALE/g, 'FALE')
-      .replace(/Yale/g, 'Fale')
-      .replace(/yale/g, 'fale');
+    const title = replaceYaleWithFale($('title').text());
     $('title').text(title);
     
     return res.json({ 
@@ -83,7 +68,14 @@ app.post('/fetch', async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Faleproxy server running at http://localhost:${PORT}`);
-});
+const startServer = () =>
+  app.listen(PORT, () => {
+    console.log(`Faleproxy server running at http://localhost:${PORT}`);
+  });
+
+if (require.main === module) {
+  // Start the server only when running this file directly
+  startServer();
+}
+
+module.exports = { app, replaceYaleWithFale, startServer };

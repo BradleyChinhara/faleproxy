@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const { sampleHtmlWithYale } = require('./test-utils');
+const { replaceYaleWithFale } = require('../app');
 
 describe('Yale to Fale replacement logic', () => {
   
@@ -12,20 +13,14 @@ describe('Yale to Fale replacement logic', () => {
     }).each(function() {
       // Replace text content but not in URLs or attributes
       const text = $(this).text();
-      const newText = text
-        .replace(/YALE/g, 'FALE')
-        .replace(/Yale/g, 'Fale')
-        .replace(/yale/g, 'fale');
+      const newText = replaceYaleWithFale(text);
       if (text !== newText) {
         $(this).replaceWith(newText);
       }
     });
     
     // Process title separately
-    const title = $('title').text()
-      .replace(/YALE/g, 'FALE')
-      .replace(/Yale/g, 'Fale')
-      .replace(/yale/g, 'fale');
+    const title = replaceYaleWithFale($('title').text());
     $('title').text(title);
     
     const modifiedHtml = $.html();
@@ -75,10 +70,7 @@ describe('Yale to Fale replacement logic', () => {
       return this.nodeType === 3;
     }).each(function() {
       const text = $(this).text();
-      const newText = text
-        .replace(/YALE/g, 'FALE')
-        .replace(/Yale/g, 'Fale')
-        .replace(/yale/g, 'fale');
+      const newText = replaceYaleWithFale(text);
       if (text !== newText) {
         $(this).replaceWith(newText);
       }
@@ -103,10 +95,7 @@ describe('Yale to Fale replacement logic', () => {
       return this.nodeType === 3;
     }).each(function() {
       const text = $(this).text();
-      const newText = text
-        .replace(/YALE/g, 'FALE')
-        .replace(/Yale/g, 'Fale')
-        .replace(/yale/g, 'fale');
+      const newText = replaceYaleWithFale(text);
       if (text !== newText) {
         $(this).replaceWith(newText);
       }
