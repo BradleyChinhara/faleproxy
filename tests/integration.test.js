@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const nock = require('nock');
 const request = require('supertest');
 const { sampleHtmlWithYale } = require('./test-utils');
-const { app } = require('../app');
+const app = require('../app');
 
 describe('Integration Tests', () => {
   beforeAll(() => {

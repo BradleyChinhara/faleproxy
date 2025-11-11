@@ -1,6 +1,7 @@
 const cheerio = require('cheerio');
 const { sampleHtmlWithYale } = require('./test-utils');
-const { replaceYaleWithFale } = require('../app');
+const app = require('../app');
+const { replaceYaleWithFale } = app;
 
 describe('Yale to Fale replacement logic', () => {
   

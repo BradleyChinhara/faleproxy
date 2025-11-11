@@ -78,4 +78,8 @@ if (require.main === module) {
   startServer();
 }
 
-module.exports = { app, replaceYaleWithFale, startServer };
+// Export the Express app for Vercel while exposing helpers for tests
+app.replaceYaleWithFale = replaceYaleWithFale;
+app.startServer = startServer;
+
+module.exports = app;
